@@ -6,9 +6,6 @@ module rl
             type(c_ptr) :: line_read
         end function
 
-        subroutine rl_free_line_state() bind(C)
-        end subroutine
-
         subroutine rl_on_new_line() bind(C)
         end subroutine
 

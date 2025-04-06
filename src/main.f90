@@ -14,7 +14,6 @@ program main
   integer :: i
   procedure(sighandler), pointer :: handler
   type(c_ptr) :: old_handler
-  logical :: balls
 
   allocate(character(len=get_path_max()) :: cwd)
   handler => handle_signals
@@ -33,18 +32,11 @@ program main
     end if
 
     line_ptr = readline(trim(cwd(i:)) // " > " // c_null_char)
-    if(balls .eqv. .true.) then
-      balls = .false.
-      exit
-    end if
     block
       type(token), allocatable :: toks(:)
       err = tokenize(line_ptr, toks, errno)
       if(err /= 0) print *, errno
     end block
-
-    ! err = chdir("/bin" // c_null_char)
-    ! if(err == -1) exit
   end do
 contains
    subroutine handle_signals(sig) bind(C)
