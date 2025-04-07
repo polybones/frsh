@@ -37,16 +37,40 @@ contains
             end block
         else
             err = -1
+            errno = "lexer error: todo"
             return
         end if
         
         block
             type(utf8_iter) :: iter
             character(kind=c_char, len=:), allocatable :: tok
+
             iter = iterator(line)
             do while(iter%has_next())
                 tok = iter%next()
                 select case(tok)
+                    case('"')
+                    block
+                        character(kind=c_char, len=:), allocatable :: str
+                        character(kind=c_char, len=:), allocatable :: t
+                        integer :: i
+                        str = ""
+                        i = 1
+                        do
+                            if(.not. iter%has_next()) then
+                                err = -1
+                                errno = "lexer error: unclosed string"
+                                return
+                            end if
+                            t = iter%next()
+                            if(t == '"') exit
+                            str = str // t
+                            i = i + 1
+                        end do
+                        print *, "read str: " // str
+                    end block
+                    case(" ")
+                    continue
                     case default
                     err = -1
                     ! TODO: custom error type

@@ -31,7 +31,7 @@ program main
       cwd(i:i) = "~"
     end if
 
-    line_ptr = readline(trim(cwd(i:)) // " > " // c_null_char)
+    line_ptr = readline("\x1B[34m" // trim(cwd(i:)) // " >\x1B[0m " // c_null_char)
     block
       type(token), allocatable :: toks(:)
       err = tokenize(line_ptr, toks, errno)
