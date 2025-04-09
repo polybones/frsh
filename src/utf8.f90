@@ -45,9 +45,10 @@ contains
         res = self%cur <= len(self%str_ptr)
     end function
 
-    function iter_next(self) result(res)
+    function iter_next(self, advance) result(res)
         use iso_c_binding, only: c_int8_t
         class(utf8_iter), intent(inout) :: self
+        logical, intent(in) :: advance
         character(len=:, kind=c_char), allocatable :: res
         integer(kind=c_int8_t) :: f_byte
         integer :: byte_len
@@ -56,6 +57,6 @@ contains
         byte_len = utf8_seq(iand(int(f_byte, 4), int(z'000000FF', 4)))
         if(byte_len == 0) byte_len = 1
         res = self%str_ptr(self%cur:self%cur + byte_len - 1)
-        self%cur = self%cur + byte_len
+        if(advance) self%cur = self%cur + byte_len
     end function
 end module utf8

@@ -34,8 +34,13 @@ program main
     line_ptr = readline("\x1B[34m" // trim(cwd(i:)) // " >\x1B[0m " // c_null_char)
     block
       type(token), allocatable :: toks(:)
+      integer :: j
+      allocate(toks(0))
       err = tokenize(line_ptr, toks, errno)
-      if(err /= 0) print *, errno
+      if(err /= 0) print *, "lexer error: " // errno
+      do j = 1, size(toks)
+        print *, toks(j)%value
+      end do
     end block
   end do
 contains
